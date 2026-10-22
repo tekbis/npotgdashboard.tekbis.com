@@ -1,0 +1,10 @@
+{
+  "name": "npotg-website",
+  "private": true,
+  "type": "module",
+  "description": "NPOTG website with content dashboard (Netlify Functions + Netlify Blobs)",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.6",
+    "@netlify/functions": "^6.0.3"
+  }
+}
