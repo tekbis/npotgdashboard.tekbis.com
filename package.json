@@ -2,9 +2,14 @@
   "name": "npotg-website",
   "private": true,
   "type": "module",
-  "description": "NPOTG website with content dashboard (Netlify Functions + Netlify Blobs)",
+  "description": "NPOTG website with content dashboard (Vercel Serverless + Vercel Blob)",
+  "scripts": {
+    "deploy": "vercel --prod"
+  },
   "dependencies": {
-    "@netlify/blobs": "^11.1.6",
-    "@netlify/functions": "^6.0.3"
+    "@vercel/blob": "^0.27.3"
+  },
+  "devDependencies": {
+    "vercel": "^41.0.0"
   }
 }

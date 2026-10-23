@@ -421,7 +421,8 @@ async function boot(){
   if(!S.demo){
     try{const r=await fetch('/api/login',{headers:TOKEN?{authorization:'Bearer '+TOKEN}:{},cache:'no-store'});
       if(!r.ok&&r.status!==401)throw new Error('nobackend');const j=await r.json();
-      if(!j.configured){return showLogin('',true)}
+      // No ADMIN_PASSWORD yet → skip login and open the dashboard directly
+      if(!j.configured){return loadApp()}
       if(!j.ok){TOKEN=null;ls.del('npotg-token');return showLogin()}}
     catch(e){S.demo=true;S.demoReason='nobackend'}
   }
@@ -431,7 +432,7 @@ function showLogin(msg,unconfigured){
   root.innerHTML=`<main class="login"><div class="lcard">
     <img class="lg" src="${esc(CFG.logoFull||CFG.logo)}" alt="NPOTG">
     <div><h1>Sign in to NPOTG Dashboard</h1><p>Edit your website's text, photos, services and contact details.</p></div>
-    ${unconfigured?`<div class="lerr">The dashboard password has not been set yet. In Netlify, open Site configuration → Environment variables, add <b>ADMIN_PASSWORD</b>, then redeploy the site.</div>`:''}
+    ${unconfigured?`<div class="lerr">The dashboard password has not been set yet. In Vercel, open Project Settings → Environment Variables, add <b>ADMIN_PASSWORD</b>, then redeploy the site.</div>`:''}
     ${msg?`<div class="lerr" id="lerr">${esc(msg)}</div>`:'<div class="lerr" id="lerr" hidden></div>'}
     <form id="lform"><div><label class="l" for="pw">Password</label><input class="inp" id="pw" type="password" autocomplete="current-password" required ${unconfigured?'disabled':''}></div>
     <button class="btn pri w" type="submit" ${unconfigured?'disabled':''}>Sign in</button></form>
@@ -812,7 +813,7 @@ function viewSeo(m){const s=Object.assign({},DEF_SEO,S.draft.seo||{});
    `<div class="card" style="padding:16px;display:grid;gap:16px">
    <div class="fld"><div class="fh"><label class="l" for="seo-t">Page title</label><span class="cnt" id="ct-t">${s.title.length} / 60</span></div><input class="inp" id="seo-t" value="${esc(s.title)}"><div class="hint">Aim for 50–60 characters. Put the most important words first.</div></div>
    <div class="fld"><div class="fh"><label class="l" for="seo-d">Description</label><span class="cnt" id="ct-d">${s.description.length} / 160</span></div><textarea class="ta" id="seo-d" rows="3">${esc(s.description)}</textarea><div class="hint">Aim for 120–160 characters.</div></div>
-   <div><label class="l">Google preview</label><div class="serp"><div class="u">${esc(location.host||'your-site.netlify.app')}</div><div class="t" id="sp-t">${esc(s.title)}</div><div class="d" id="sp-d">${esc(s.description)}</div></div></div></div>`;
+   <div><label class="l">Google preview</label><div class="serp"><div class="u">${esc(location.host||'your-site.vercel.app')}</div><div class="t" id="sp-t">${esc(s.title)}</div><div class="d" id="sp-d">${esc(s.description)}</div></div></div></div>`;
   const save=()=>{const n={title:$('#seo-t').value,description:$('#seo-d').value};$('#ct-t').textContent=n.title.length+' / 60';$('#ct-d').textContent=n.description.length+' / 160';$('#sp-t').textContent=n.title;$('#sp-d').textContent=n.description;
     if(n.title===DEF_SEO.title&&n.description===DEF_SEO.description)delete S.draft.seo;else S.draft.seo=n;touched()};
   $('#seo-t').addEventListener('input',save);$('#seo-d').addEventListener('input',save)}
