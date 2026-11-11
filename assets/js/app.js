@@ -79,7 +79,16 @@ const CMS=(function(){
     if(ok(th.gold)){r.setProperty('--gold',th.gold);r.setProperty('--gold-soft',mix(th.gold,'#ffffff',.38))}
     if(ok(th.lilac)){r.setProperty('--lilac',th.lilac);r.setProperty('--lilac-soft',mix(th.lilac,'#ffffff',.75))}
     if(ok(th.ink))r.setProperty('--ink',th.ink)}
-  function applySeo(){const s=C.seo||{};if(s.title)document.title=s.title;if(s.description){const m=document.querySelector('meta[name="description"]');if(m)m.content=s.description}}
+  function applySeo(){
+    const s=C.seo||{};
+    const set=(sel,val)=>{const el=document.querySelector(sel);if(el&&val!=null)el.setAttribute('content',val)};
+    if(s.title){document.title=s.title;set('meta[property="og:title"]',s.title);set('meta[name="twitter:title"]',s.title)}
+    if(s.description){set('meta[name="description"]',s.description);set('meta[property="og:description"]',s.description);set('meta[name="twitter:description"]',s.description)}
+    const ogImg=location.origin+'/assets/img/og-image.jpg';
+    set('meta[property="og:image"]',ogImg);set('meta[property="og:image:secure_url"]',ogImg);set('meta[name="twitter:image"]',ogImg);
+    set('meta[property="og:url"]',location.origin+'/');
+    const can=document.querySelector('link[rel="canonical"]');if(can)can.href=location.origin+'/';
+  }
   const DEF_CONTACT={phone:'(555) 123-4567',email:'hello@npotg.com',instagram:'https://instagram.com',facebook:'https://facebook.com',tiktok:'https://tiktok.com'};
   function applyContact(){const c=Object.assign({},DEF_CONTACT,C.contact||{});
     const tel='tel:'+(c.phone.replace(/[^\d+]/g,'').replace(/^(\d{10})$/,'+1$1'));
